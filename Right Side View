@@ -1,0 +1,41 @@
+from collections import *
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def build_tree(lst, index=0):
+    if index < len(lst) and lst[index] is not None:
+        node = Node(lst[index])
+        node.left = build_tree(lst, 2 * index + 1)
+        node.right = build_tree(lst, 2 * index + 2)
+        return node
+    return None
+
+def right_side_view(root):
+    if root is None:
+        return []
+    right_values = []
+    queue = deque([(root, 0)])
+    while queue:
+        front = queue.popleft()
+        if front[0].left:
+            queue.append((front[0].left, front[1] + 1))
+        if front[0].right:
+            queue.append((front[0].right, front[1] + 1))
+        if not queue or queue[0][1] > front[1]:
+            right_values.append(front[0].value)
+    return right_values
+
+test_cases_and_answers = [
+    ([1, 2, 3, None, 5, None, 4], [1, 3, 4]),
+    ([1, None, 3], [1, 3]),
+    ([], []),
+    ([7], [7]),
+    ([1, 2, 3, 4], [1, 3, 4])
+    ]
+
+for test in test_cases_and_answers:
+    print(right_side_view(build_tree(test[0])), ', Answer: ', test[1], sep = '')
